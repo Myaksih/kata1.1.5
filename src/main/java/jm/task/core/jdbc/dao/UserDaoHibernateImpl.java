@@ -3,12 +3,15 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import javax.persistence.Query;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
+
+    private static SessionFactory sessionFactory = Util.getHibernateConnection();
     public UserDaoHibernateImpl() {
 
     }
@@ -16,7 +19,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        try(Session session = Util.getSessionFactory().openSession()) {
+        try(Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
 
             String sql = "CREATE TABLE IF NOT EXIST Users " +
@@ -30,7 +33,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
-        try(Session session = Util.getSessionFactory().openSession()) {
+        try(Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
 
             String sql = "DROP TABLE IF EXIST Users";
@@ -44,7 +47,7 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void saveUser(String name, String lastName, byte age) {
         Transaction transaction = null;
-        try(Session session = Util.getSessionFactory().getCurrentSession()){
+        try(Session session = sessionFactory.getCurrentSession()){
             transaction = session.beginTransaction();
             User user = new User(name,lastName,age);
             session.save(user);
@@ -59,7 +62,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        try (Session session = Util.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             return session.createQuery("from User", User.class).list();
         }
     }

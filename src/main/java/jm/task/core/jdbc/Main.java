@@ -13,6 +13,7 @@ public class Main {
         User user = new User("Kolya", "Kozhemyakin", (byte) 20);
 
         UserDaoHibernateImpl userDao = new UserDaoHibernateImpl();
+        userDao.dropUsersTable();
         userDao.createUsersTable();
         userDao.saveUser("Kolya",  "Kozhemyakin", (byte) 20);
 }
